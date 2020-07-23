@@ -1,6 +1,8 @@
 package ga.brunnofdc.fdchomes.commands;
 
 import ga.brunnofdc.fdchomes.Main;
+import ga.brunnofdc.fdchomes.objects.Home;
+import ga.brunnofdc.fdchomes.objects.Profile;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,11 +16,21 @@ public class Commandsethome implements CommandExecutor {
         if(sender instanceof Player) {
 
             Player p = (Player)sender;
+            Profile profile = Main.profiles.get(p);
+
+            if(profile == null) {
+                p.sendMessage("§4ERRO: §cSeu perfil não foi encontrado. Tente relogar!");
+                return true;
+            }
+
             if(args.length > 0) {
                 String homeName = args[0];
-
-                if(!Main.homes.containsKey(homeName)) {
-                    Main.homes.put(homeName, p.getLocation());
+                boolean alreadyExists = profile.getHomes()
+                        .stream()
+                        .anyMatch(matchedHome -> matchedHome.getName().equals(homeName));
+                if(!alreadyExists) {
+                    Home newHome = new Home(profile, homeName, p.getLocation());
+                    profile.getHomes().add(newHome);
                     p.sendMessage("§aSUCESSO! §eSua home §b" + homeName + "§e foi definida!");
                 } else {
                     p.sendMessage("§4ERRO: §cEste nome já está em uso!");
