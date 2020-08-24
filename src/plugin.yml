@@ -3,4 +3,5 @@ version: 1.0
 main: ga.brunnofdc.fdchomes.Main
 commands:
   home:
+  homes:
   sethome:
